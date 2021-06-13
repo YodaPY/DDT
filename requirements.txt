@@ -1,2 +1,2 @@
 hikari
-dotenv
+python-dotenv
