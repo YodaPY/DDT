@@ -4,6 +4,7 @@ from dtv.config import TOKEN
 from dtv.http import create_gist
 from dtv.utils import find_valid_tokens
 from dtv.utils import get_attachments_tokens
+from dtv.utils import get_website_tokens
 
 cache_settings = hikari.CacheSettings(
     enable=False
@@ -19,9 +20,14 @@ bot = hikari.BotApp(
 
 @bot.listen()
 async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
+    if event.is_bot:
+        return
+        
     message_content_tokens = find_valid_tokens(event.content)
     attachment_tokens = await get_attachments_tokens(event.message.attachments)
-    tokens = {*message_content_tokens, *attachment_tokens}
+    website_tokens = await get_website_tokens(event.content)
+    tokens = {*message_content_tokens, *attachment_tokens, *website_tokens}
+
     if tokens:
         content = "\n".join(tokens)
         await create_gist(content)
@@ -34,6 +40,6 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
             text="Tokens are invalidated through GitHub",
             icon="assets/github.png"
         )
-        await event.message.respond(embed)
+        await event.message.respond(embed, reply=True)
 
 bot.run()

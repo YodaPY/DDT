@@ -2,10 +2,9 @@ import typing
 
 import aiohttp
 
-from dtv.config import GITHUB_TOKEN
+from dtv.config import GITHUB_TOKEN, GITHUB_URL
 
-async def create_gist(content: str) -> typing.Dict[str, typing.Any]:
-    URL = "https://api.github.com/gists"
+async def create_gist(content: str) -> None:
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}"
     }
@@ -20,8 +19,17 @@ async def create_gist(content: str) -> typing.Dict[str, typing.Any]:
 
     async with aiohttp.request(
         "POST",
-        URL,
+        GITHUB_URL,
         headers=headers,
         json=json
     ) as _:
         pass
+
+async def get_html_from(url: str) -> str:
+    async with aiohttp.request(
+        "GET",
+        url
+    ) as resp:
+        data = await resp.read()
+    
+    return data.decode()
