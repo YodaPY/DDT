@@ -1,2 +1,3 @@
 hikari
 python-dotenv
+python-magic

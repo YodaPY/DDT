@@ -5,6 +5,7 @@ import re
 import typing
 
 import hikari
+import magic
 
 from dtv.http import get_html_from
 
@@ -22,10 +23,28 @@ def find_valid_tokens(s: str) -> typing.Generator[str, None, None]:
         
         yield token
 
+async def get_mimetype(stream: hikari.files.WebReader, max_bytes: int=2048) -> str:
+    c = 0
+    buff = b""
+    async for chunk in stream:
+        if c == max_bytes:
+            break
+            
+        buff += chunk
+        c += 1
+
+    return magic.from_buffer(buff, mime=True)
+
 async def get_attachments_tokens(attachments: typing.Iterable[hikari.Attachment]) -> typing.List[str]:
     attachments_tokens = []
     for attachment in attachments:
-        data = await attachment.read() 
+        async with attachment.stream() as stream:
+            mimetype = await get_mimetype(stream)
+            if not mimetype.startswith("text"):
+                continue
+
+            data = await stream.read()
+
         text = data.decode()
         tokens = find_valid_tokens(text)
         attachments_tokens.extend(tokens)
