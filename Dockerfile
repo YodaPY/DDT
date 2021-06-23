@@ -4,7 +4,9 @@ COPY ./requirements.txt /bot/requirements.txt
 
 WORKDIR /bot
 
-RUN apt update && apt install -y libmagic1 && pip install -Ur requirements.txt
+RUN apt update && apt install -y libmagic1
+
+RUN pip install -Ur requirements.txt
 
 COPY . /bot
 

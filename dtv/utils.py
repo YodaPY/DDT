@@ -25,15 +25,15 @@ def find_valid_tokens(s: str) -> typing.Generator[str, None, None]:
 
 async def get_mimetype(stream: hikari.files.WebReader, max_bytes: int=2048) -> str:
     c = 0
-    buff = b""
+    buff = bytearray()
     async for chunk in stream:
         if c == max_bytes:
             break
             
-        buff += chunk
+        buff.append(chunk)
         c += 1
 
-    return magic.from_buffer(buff, mime=True)
+    return magic.from_buffer(bytes(buff), mime=True)
 
 async def get_attachments_tokens(attachments: typing.Iterable[hikari.Attachment]) -> typing.List[str]:
     attachments_tokens = []
