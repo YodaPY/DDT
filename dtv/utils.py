@@ -30,7 +30,7 @@ async def get_mimetype(stream: hikari.files.WebReader, max_bytes: int=2048) -> s
         if c == max_bytes:
             break
             
-        buff.append(chunk)
+        buff.extend(chunk)
         c += 1
 
     return magic.from_buffer(bytes(buff), mime=True)
