@@ -23,7 +23,7 @@ def find_valid_tokens(s: str) -> typing.Generator[str, None, None]:
         
         yield token
 
-async def get_mimetype(stream: hikari.files.WebReader, max_bytes: int=2048) -> str:
+async def read_stream(stream: hikari.files.WebReader, max_bytes: typing.Optional[int]=None) -> bytes:
     c = 0
     buff = bytearray()
     async for chunk in stream:
@@ -33,17 +33,18 @@ async def get_mimetype(stream: hikari.files.WebReader, max_bytes: int=2048) -> s
         buff.extend(chunk)
         c += 1
 
-    return magic.from_buffer(bytes(buff), mime=True)
+    return bytes(buff)
 
 async def get_attachments_tokens(attachments: typing.Iterable[hikari.Attachment]) -> typing.List[str]:
     attachments_tokens = []
     for attachment in attachments:
         async with attachment.stream() as stream:
-            mimetype = await get_mimetype(stream)
+            buff = await read_stream(stream, 2048)
+            mimetype = magic.from_buffer(buff, mime=True)
             if not mimetype.startswith("text"):
                 continue
 
-            data = await stream.read()
+            data = buff + await read_stream(stream)
 
         text = data.decode()
         tokens = find_valid_tokens(text)
