@@ -34,8 +34,9 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
         embed = hikari.Embed(
             title="Oh no!",
             description="You just leaked a token! I reset it for you.",
-            color=0xffcc00
+            color=0x5F7EEA
         )
+        embed.set_image("assets/banner.png")
         embed.set_footer(
             text="Tokens are invalidated through GitHub",
             icon="assets/github.png"
