@@ -10,4 +10,4 @@ RUN pip install -Ur requirements.txt
 
 COPY . /bot
 
-ENTRYPOINT python -OO -m dtv
+ENTRYPOINT python -OO -m ddt
