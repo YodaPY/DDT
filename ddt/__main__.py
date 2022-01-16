@@ -44,6 +44,7 @@ async def on_reaction_add(event: hikari.ReactionAddEvent) -> None:
         message = await bot.rest.fetch_message(event.channel_id, event.message_id)
         code = format_code(message.content)
         if code is not None:
+            code = "```py\n{code}"""
             await message.respond(code)
 
 
