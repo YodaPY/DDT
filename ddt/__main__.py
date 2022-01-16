@@ -4,8 +4,7 @@ import isort
 
 from ddt.config import TOKEN
 from ddt.http import create_gist
-from ddt.utils import (find_valid_tokens, format_code, get_attachments_tokens,
-                       get_website_tokens)
+from ddt.utils import (find_valid_tokens, format_code, get_attachments_tokens, get_website_tokens)
 
 cache_settings = hikari.CacheSettings(components=hikari.CacheComponents())
 

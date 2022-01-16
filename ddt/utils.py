@@ -11,10 +11,6 @@ import magic
 
 from ddt.http import get_html_from
 
-# formatting related imports
-
-
-
 TOKEN_REGEX: re.Pattern = re.compile(r"[\w-]{23,28}\.[\w-]{5,7}\.[\w-]{27}")
 URL_REGEX: re.Pattern = re.compile(
     r"https?:\/\/(?:www\.)?[a-z0-9-]{2,62}\.(?:[a-z]\.?)+[^\s]*"
