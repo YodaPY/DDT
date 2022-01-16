@@ -10,7 +10,7 @@ cache_settings = hikari.CacheSettings(components=hikari.CacheComponents())
 
 intents = hikari.Intents.GUILD_MESSAGES | hikari.Intents.ALL_MESSAGE_REACTIONS
 
-bot = hikari.BotApp(token=TOKEN, cache_settings=cache_settings, intents=intents)
+bot = hikari.GatewayBot(token=TOKEN, cache_settings=cache_settings, intents=intents)
 
 
 @bot.listen()
