@@ -19,6 +19,11 @@ CODEBLOCK_REGEX: re.Pattern = re.compile(
     r"`{1,3}(?:\w+\s+)?\s*(?P<code>.+?)\s*`{1,3}", flags=re.DOTALL
 )
 
+FORMATTERS: typing.Final[typing.Dict[typing.Callable[..., str], tuple]] = {
+    black.format_str: lambda code: ((code,), {"mode": black.Mode()}),
+    isort.code: lambda code: ((code,), {"config": isort.Config(profile="black")})
+}
+
 
 def find_valid_tokens(s: str) -> typing.Generator[str, None, None]:
     tokens = TOKEN_REGEX.findall(s)
@@ -81,8 +86,10 @@ async def get_website_tokens(s: str) -> typing.List[str]:
 def format_code(codeblock: str) -> typing.Optional[str]:
     if match := CODEBLOCK_REGEX.match(codeblock):
         code = match.group("code")
-        code = black.format_str(code, mode=black.Mode())
-        code = isort.code(code, config=isort.Config(profile="black"))
+        for formatter, get_args in FORMATTER.items():
+            args, kwargs = get_args(code)
+            code = formatter(*args, **kwargs)
+
         return code
 
     return None
